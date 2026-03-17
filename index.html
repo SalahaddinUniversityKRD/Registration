@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سیستەمی تۆمارکردنی زانکۆی سەڵاحەدین</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* فۆنت و ڕێکخستنی سەرەتایی */
+        @font-face { font-family: 'NRT'; src: url('NRT-Reg.ttf') format('truetype'); }
+        :root { --blob-1: #ff0080; --blob-2: #00f0ff; }
+        body, html { margin: 0; padding: 0; width: 100%; min-height: 100%; background-color: #050510; overflow-x: hidden; font-family: 'NRT', sans-serif; }
+        
+        /* باکگراوند و ڕەنگە جوڵاوەکان */
+        .hero-bg { position: fixed; top: 0; left: 0; width: 100%; height: 50vh; background: url('salahaddin.jpg') no-repeat center top/cover; mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%); -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%); z-index: 0; }
+        .fluid-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; overflow: hidden; z-index: 0; filter: blur(100px); transform: translate3d(0, 0, 0); }
+        .blob { position: absolute; border-radius: 50%; mix-blend-mode: screen; opacity: 0.6; }
+        .blob-1 { width: 60vw; height: 60vw; background: radial-gradient(circle, var(--blob-1) 0%, transparent 70%); top: -10%; left: -10%; animation: float-1 25s infinite alternate ease-in-out; }
+        .blob-2 { width: 50vw; height: 50vw; background: radial-gradient(circle, var(--blob-2) 0%, transparent 70%); bottom: -20%; right: -10%; animation: float-2 22s infinite alternate ease-in-out; }
+        @keyframes float-1 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(15vw, -5vh) scale(1.05); } }
+        @keyframes float-2 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-10vw, -10vh) scale(1.1); } }
+        
+        /* دیزاینی شووشەیی بۆ خانەکان */
+        .glass-panel { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); position: relative; }
+        .glass-input { width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: white; padding: 0.75rem 1rem; border-radius: 0.75rem; outline: none; transition: all 0.3s ease; }
+        .glass-input:focus { border-color: #00f0ff; box-shadow: 0 0 15px rgba(0, 240, 255, 0.2); background: rgba(0, 0, 0, 0.2); }
+        .glass-input::placeholder { color: rgba(255, 255, 255, 0.4); }
+        select.glass-input option { background-color: #050510; color: white; }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+        
+        /* دوگمە و بەشەکان */
+        .btn-glass { transition: all 0.3s ease; cursor: pointer; }
+        .btn-glass:hover { background: rgba(0, 240, 255, 0.2); border-color: #00f0ff; transform: translateY(-2px); }
+        .form-section { display: none; }
+        .form-section.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="text-white selection:bg-fuchsia-500 selection:text-white">
+
+    <div class="hero-bg"></div>
+    <div class="fluid-bg"><div class="blob blob-1"></div><div class="blob blob-2"></div></div>
+
+    <main class="relative z-10 min-h-screen flex flex-col p-4 md:p-8 xl:p-12">
+        
+        <header class="glass-panel w-full rounded-2xl md:rounded-3xl p-4 md:px-8 flex items-center justify-between z-20">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-white/10 p-1 shadow-[0_0_20px_rgba(0,240,255,0.2)] border border-white/20 overflow-hidden">
+                    <img src="salahaddin.logo.png" alt="Logo" class="w-full h-full object-cover rounded-full" onerror="this.style.display='none'">
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold tracking-wider">زانکۆی سەڵاحەدین</h1>
+                    <span class="text-sm text-cyan-300 font-light tracking-widest">سیستەمی تۆمارکردن</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="w-full max-w-6xl mx-auto mt-8 z-10">
+            <div class="glass-panel rounded-3xl p-6 md:p-10 border-t border-l border-white/20">
+                
+                <form id="studentForm">
+                    <div class="form-section active" id="sec1">
+                        <h2 class="text-2xl text-cyan-400 mb-6 border-b border-white/10 pb-2">زانیاری زانکۆلاین</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div><label class="block mb-2 text-sm text-white/70">Zankoline Username</label><input type="text" name="zankoUser" class="glass-input" dir="ltr" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+                            <div><label class="block mb-2 text-sm text-white/70">Zankoline Password</label><input type="password" name="zankoPass" class="glass-input" dir="ltr" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+                            <div><label class="block mb-2 text-sm text-white/70">OTP Code</label><input type="text" name="otpCode" class="glass-input" dir="ltr" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+                        </div>
+
+                        <h2 class="text-2xl text-cyan-400 mb-6 mt-10 border-b border-white/10 pb-2">ناوی ئینگلیزی (وەک پاسپۆرت)</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <div><label class="block mb-2 text-sm text-white/70">First Name</label><input type="text" name="firstNameEn" class="glass-input" dir="ltr" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"></div>
+                            <div><label class="block mb-2 text-sm text-white/70">Second Name</label><input type="text" name="secondNameEn" class="glass-input" dir="ltr" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"></div>
+                            <div><label class="block mb-2 text-sm text-white/70">Last Name</label><input type="text" name="lastNameEn" class="glass-input" dir="ltr" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"></div>
+                            <div><label class="block mb-2 text-sm text-white/70">Surname</label><input type="text" name="surnameEn" class="glass-input" dir="ltr" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"></div>
+                        </div>
+
+                        <div class="mt-8 flex justify-end">
+                            <button type="button" onclick="nextSec(2)" class="btn-glass bg-white/10 border border-white/20 px-8 py-3 rounded-xl font-bold">هەنگاوی دواتر ←</button>
+                        </div>
+                    </div>
+
+                    <div class="form-section" id="sec2">
+                        <h2 class="text-2xl text-cyan-400 mb-6 border-b border-white/10 pb-2">ناوی کوردی و عەرەبی</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                            <div><label class="block mb-2 text-sm text-white/70">ناوی یەکەم</label><input type="text" name="firstNameKu" class="glass-input" oninput="filterKurdish(this)"></div>
+                            <div><label class="block mb-2 text-sm text-white/70">ناوی دووەم</label><input type="text" name="secondNameKu" class="glass-input" oninput="filterKurdish(this)"></div>
+                            <div><label class="block mb-2 text-sm text-white/70">ناوی سێیەم</label><input type="text" name="thirdNameKu" class="glass-input" oninput="filterKurdish(this)"></div>
+                            <div><label class="block mb-2 text-sm text-white/70">نازناو</label><input type="text" name="surnameKu" class="glass-input" oninput="filterKurdish(this)"></div>
+                            
+                            <div><label class="block mb-2 text-sm text-white/70">الاسم الأول</label><input type="text" name="firstNameAr" class="glass-input" oninput="filterKurdish(this)"></div>
+                            <div><label class="block mb-2 text-sm text-white/70">الاسم الثاني</label><input type="text" name="secondNameAr" class="glass-input" oninput="filterKurdish(this)"></div>
+                            <div><label class="block mb-2 text-sm text-white/70">الاسم الثالث</label><input type="text" name="thirdNameAr" class="glass-input" oninput="filterKurdish(this)"></div>
+                            <div><label class="block mb-2 text-sm text-white/70">اللقب</label><input type="text" name="surnameAr" class="glass-input" oninput="filterKurdish(this)"></div>
+                        </div>
+
+                        <h2 class="text-2xl text-cyan-400 mb-6 border-b border-white/10 pb-2">زانیاری گشتی</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div><label class="block mb-2 text-sm text-white/70">بەرواری لەدایکبوون</label><input type="date" name="birthday" class="glass-input" style="color-scheme: dark;"></div>
+                            <div><label class="block mb-2 text-sm text-white/70">ڕەگەز</label><select name="gender" class="glass-input"><option value="" disabled selected>هەڵبژێرە...</option><option>نێر</option><option>مێ</option></select></div>
+                            <div><label class="block mb-2 text-sm text-white/70">ڕەگەزنامە</label><select name="nationality" class="glass-input"><option value="" disabled selected>هەڵبژێرە...</option><option>Iraqi</option><option>Syrian</option><option>Iranian</option><option>Turkish</option><option>Other</option></select></div>
+                            <div><label class="block mb-2 text-sm text-white/70">شوێنی لەدایکبوون</label><input type="text" name="pob" class="glass-input" oninput="filterKurdish(this)"></div>
+                            <div><label class="block mb-2 text-sm text-white/70">قەزا</label><input type="text" name="district" class="glass-input" oninput="filterKurdish(this)"></div>
+                            <div><label class="block mb-2 text-sm text-white/70">باری خێزانی</label><select name="maritalStatus" class="glass-input"><option value="" disabled selected>هەڵبژێرە...</option><option>سەڵت</option><option>خێزاندار</option></select></div>
+                        </div>
+
+                        <div class="mt-8 flex justify-between">
+                            <button type="button" onclick="nextSec(1)" class="btn-glass bg-transparent text-white/70 hover:text-white px-8 py-3 rounded-xl font-bold">پێشتر</button>
+                            <button type="button" onclick="nextSec(3)" class="btn-glass bg-white/10 border border-white/20 px-8 py-3 rounded-xl font-bold">هەنگاوی کۆتایی ←</button>
+                        </div>
+                    </div>
+
+                    <div class="form-section" id="sec3">
+                        <h2 class="text-2xl text-cyan-400 mb-6 border-b border-white/10 pb-2">پەیوەندی و خوێندن</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div><label class="block mb-2 text-sm text-white/70">ژمارەی مۆبایل</label><input type="text" name="phone" class="glass-input" dir="ltr" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+                            <div><label class="block mb-2 text-sm text-white/70">ئیمێڵی کەسی (بۆ وەرگرتنی وەسڵ)</label><input type="email" id="emailInput" name="email" placeholder="example@gmail.com" class="glass-input" dir="ltr"></div>
+                            <div><label class="block mb-2 text-sm text-white/70">جۆری خوێن</label><select name="bloodGroup" class="glass-input" dir="ltr"><option value="" disabled selected>Select...</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
+                            <div><label class="block mb-2 text-sm text-white/70">ناوی کەسی دووەم لە کاتی نەخوازراو</label><input type="text" name="emergencyName" class="glass-input" oninput="filterKurdish(this)"></div>
+                            <div><label class="block mb-2 text-sm text-white/70">مۆبایلی کەسی دووەم</label><input type="text" name="emergencyPhone" class="glass-input" dir="ltr" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+                            <div><label class="block mb-2 text-sm text-white/70">پەیوەندی کەسەکە</label><input type="text" name="relation" class="glass-input" oninput="filterKurdish(this)"></div>
+                            <div><label class="block mb-2 text-sm text-white/70">شێوازی خوێندن</label><select name="studyType" class="glass-input"><option value="" disabled selected>هەڵبژێرە...</option><option>زانکۆلاین</option><option>پارالێل</option><option>ئێواران</option></select></div>
+                            <div><label class="block mb-2 text-sm text-white/70">کۆلێژ</label><select name="college" id="collegeSelect" class="glass-input" onchange="updateDepartments()"><option value="" disabled selected>هەڵبژێرە...</option><option>کۆلێژی ئاداب</option><option>کۆلێژی پەروەردە</option><option>کۆلێژی زانست</option><option>کۆلێژی ئەندازیاری</option><option>کۆلێژی کشتوکاڵ</option><option>کۆلێژی یاسا</option><option>کۆلێژی بەڕێوەبردن و ئابووری</option><option>کۆلێژی پەروەردەی جەستەیی</option><option>کۆلێژی زمان</option><option>کۆلێژی زانستە ئیسلامییەکان</option><option>کۆلێژی هونەرە جوانەکان</option><option>کۆلێژی پەروەردەی بنەڕەت</option><option>کۆلێژی زانستە سیاسییەکان</option><option>کۆلێژی پەروەردە - شەقڵاوە</option><option>کۆلێژی پەروەردە - مەخموور</option><option>کۆمپیوتەر و ئینفۆرماتیکس</option><option>ڤێتێرنەری</option></select></div>
+                            <div><label class="block mb-2 text-sm text-white/70">بەش</label><select name="department" id="deptSelect" class="glass-input"><option value="" disabled selected>پێشتر کۆلێژ هەڵبژێرە...</option></select></div>
+                        </div>
+
+                        <div class="glass-panel rounded-2xl p-6 border border-white/10 bg-white/5 mb-8">
+                            <label class="block mb-2 text-white font-bold">بارکردنی وێنەی کەسی (پشتی سپی)</label>
+                            <p class="text-xs text-white/50 mb-4">قەبارەی وێنە دەبێت لە نێوان 200KB تا 1MB بێت.</p>
+                            <input type="file" id="imageInput" accept="image/*" class="w-full text-sm text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-500/20 file:text-cyan-300 hover:file:bg-cyan-500/30">
+                        </div>
+
+                        <div class="mt-8 flex justify-between items-center">
+                            <button type="button" onclick="nextSec(2)" class="btn-glass bg-transparent text-white/70 hover:text-white px-8 py-3 rounded-xl font-bold">پێشتر</button>
+                            <button type="button" onclick="submitData()" id="submitBtn" class="btn-glass bg-gradient-to-r from-cyan-500 to-fuchsia-500 text-white px-10 py-3 rounded-xl font-bold text-lg shadow-[0_0_20px_rgba(0,240,255,0.4)]">
+                                تۆمارکردنی زانیاری
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <div id="loading" class="hidden mt-6 text-center">
+                    <div class="inline-block w-8 h-8 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+                    <p class="mt-2 text-cyan-300 font-bold">لە ناردندایە، تکایە چاوەڕێ بکە... ئەمە ڕەنگە چەند چرکەیەک بخایەنێت.</p>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // --- لینکی نوێی گۆگڵ شیتەکە لێرە دانراوە ---
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8ge70yiaq9MWB8gMX2qdL9Yy6eaGcocHxQCX7WBESTcHhq08jvO2tio_QZ8g7jsg/exec";
+
+        // فلتەری زمان
+        function filterKurdish(input) {
+            input.value = input.value.replace(/[^\u0600-\u06FF\s]/g, '');
+        }
+
+        // گۆڕینی بەشەکانی فۆرمەکە
+        function nextSec(secNum) {
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('sec' + secNum).classList.add('active');
+            window.scrollTo(0, 0); // بۆ ئەوەی بگەڕێتەوە سەرەوەی پەڕەکە
+        }
+
+        // داینامیک کردنی کۆلێژ و بەشەکان
+        const collegeDepts = {
+            "کۆلێژی پەروەردە": ["بایۆلۆجی", "کیمیا", "فیزیا", "ماتماتیک", "ڕێنمایی پەروەردەیی و دەروونی", "پەروەردەی تایبەت", "زمانی ئینگلیزی", "زمانی عەرەبی", "زمانی کوردی", "زمانی سریانی"],
+            "کۆلێژی زانست": ["کۆمپیوتەر", "بایۆلۆجی", "کیمیا", "فیزیا", "ماتماتیک", "جیۆلۆجی", "ژینگە"],
+            "کۆلێژی ئەندازیاری": ["شارستانی", "تەلارسازی", "سۆفتوێر", "میکانیک", "کارەبا", "ڕووپێوان", "سەرچاوەکانی ئاو", "فڕۆکەوانی"],
+            "کۆلێژی ئاداب": ["مێژوو", "جوگرافیا", "فەلسەفە", "کۆمەڵناسی", "کاری کۆمەڵایەتی", "ڕاگەیاندن"],
+            "کۆلێژی زمان": ["ئینگلیزی", "کوردی", "عەرەبی", "فەرەنسی", "تورکی", "فارسی", "ئەڵمانی"],
+            "کۆلێژی بەڕێوەبردن و ئابووری": ["ئابووری", "کارگێڕی کار", "ژمێریاری", "ئامار", "گەشتوگوزار", "دارایی"]
+        };
+
+        function updateDepartments() {
+            const college = document.getElementById('collegeSelect').value;
+            const deptSelect = document.getElementById('deptSelect');
+            deptSelect.innerHTML = "";
+            if (collegeDepts[college]) {
+                collegeDepts[college].forEach(dept => {
+                    let opt = document.createElement('option');
+                    opt.value = dept; opt.innerHTML = dept;
+                    deptSelect.appendChild(opt);
+                });
+            } else {
+                deptSelect.innerHTML = "<option>بەشەکان بەردەست نین</option>";
+            }
+        }
+
+        // فەنکشنی ناردنی زانیارییەکان
+        function submitData() {
+            const emailInput = document.getElementById('emailInput').value;
+            const fileInput = document.getElementById('imageInput');
+
+            // ١. پشکنینی ئیمێڵ
+            if (!emailInput || !emailInput.includes('@') || !emailInput.includes('.')) {
+                alert("تکایە ئیمێڵێکی دروست بنووسە. نموونە: example@gmail.com");
+                return;
+            }
+
+            // ٢. پشکنینی وێنە
+            if (fileInput.files.length === 0) {
+                alert("تکایە وێنەی کەسی باربکە بۆ تەواوکردنی تۆمارکردن.");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const sizeKB = file.size / 1024;
+            if (sizeKB < 200 || sizeKB > 1024) {
+                alert(`قەبارەی وێنەکە دەبێت لە نێوان 200KB و 1MB بێت.\nقەبارەی وێنەکەی تۆ ئێستا: ${Math.round(sizeKB)}KB یە.`);
+                return;
+            }
+
+            // ٣. ئامادەکردنی فۆرمەکە بۆ ناردن (شاردنەوەی دوگمە و پیشاندانی لۆدینگ)
+            document.getElementById('submitBtn').classList.add('hidden');
+            document.getElementById('loading').classList.remove('hidden');
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                // کۆکردنەوەی هەموو داتاکان
+                const formData = new FormData(document.getElementById('studentForm'));
+                const obj = Object.fromEntries(formData.entries());
+                
+                // زیادکردنی وێنەکە بۆ ناو داتاکان
+                obj.imageData = event.target.result;
+
+                // ناردن بۆ گۆگڵ
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // ڕێگری دەکات لە کێشەی CORS
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(obj)
+                }).then(() => {
+                    alert('پیرۆزە! زانیارییەکانت بە سەرکەوتوویی نێردران. تکایە ئیمێڵەکەت بپشکنە بۆ وەرگرتنی فایلی PDF.');
+                    location.reload(); // لاپەڕەکە ڕیفرێش دەکاتەوە
+                }).catch(err => {
+                    console.error("هەڵەی ناردن:", err);
+                    alert('کێشەیەک ڕوویدا لە کاتی ناردندا. دڵنیابەوە لە هێڵی ئینتەرنێتەکەت و دووبارە هەوڵ بدەرەوە.');
+                    // گەڕاندنەوەی دوگمەکە ئەگەر کێشە هەبوو
+                    document.getElementById('submitBtn').classList.remove('hidden');
+                    document.getElementById('loading').classList.add('hidden');
+                });
+            };
+            
+            // خوێندنەوەی فایلی وێنەکە
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>
